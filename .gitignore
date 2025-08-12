@@ -112,5 +112,4 @@ frontens/.env.*
 # Deployment / platform-specific
 .vercel/
 .netlify/
-render.yaml
 Procfile
