@@ -1,13 +1,18 @@
 # Deploying Backend to Render
 
-## IMPORTANT: Fixed Dependency Conflicts
+## IMPORTANT: Fixed Multiple Dependency Conflicts
 
-The main issue was a dependency conflict between TensorFlow 2.13.0 and newer FastAPI/Pydantic versions. I've fixed this by using compatible package versions.
+I've resolved two major dependency conflicts:
+1. **TensorFlow vs FastAPI/Pydantic** - Fixed with compatible versions
+2. **Pillow version conflicts** - Fixed with Pillow 9.5.0
 
 ### What Was Fixed
 - **TensorFlow 2.13.0** requires `typing-extensions<4.6.0`
 - **FastAPI 0.104.1** and **Pydantic 2.0.3** need `typing-extensions>=4.6.1`
-- **Solution**: Use FastAPI 0.95.2 + Pydantic 1.10.8 (compatible with TensorFlow 2.13.0)
+- **Solution**: Use FastAPI 0.95.2 + Pydantic 1.10.8
+
+- **Pillow conflicts**: matplotlib, reportlab, and streamlit had conflicting Pillow requirements
+- **Solution**: Use Pillow 9.5.0 (compatible with all packages)
 
 ### Method 1: Use render.yaml (Recommended)
 1. **Commit and push** the updated `render.yaml` file to your repository
@@ -44,15 +49,25 @@ If you continue to have dependency conflicts:
 3. **Keeps**: Core API, recommendations, basic ML (scikit-learn only)
 4. **Set**: `ENABLE_HEAVY=false` in environment variables
 
+### Method 4: Ultra-Minimal Deployment (Last Resort)
+If all else fails:
+
+1. **Build Command**: `pip install -r requirements-ultra-minimal.txt`
+2. **This removes**: All ML packages, keeps only core API
+3. **Keeps**: FastAPI, recommendations engine, basic functionality
+4. **Set**: `ENABLE_HEAVY=false` in environment variables
+
 ## Why This Happens
 - **Python 3.13 is too new** for most ML packages
 - **Package dependency conflicts** between different versions
 - **TensorFlow has strict version requirements** for dependencies
+- **Multiple packages can have conflicting requirements** for the same dependency
 - **render.yaml is the most reliable** way to specify Python version
 
 ## Current Status
-✅ `requirements-render.txt` - Fixed dependency conflicts  
-✅ `requirements-minimal.txt` - Backup minimal packages  
+✅ `requirements-render.txt` - Fixed all dependency conflicts  
+✅ `requirements-minimal.txt` - Backup with basic ML  
+✅ `requirements-ultra-minimal.txt` - Core API only  
 ✅ `render.yaml` - Forces Python 3.11 + backend directory  
 ✅ `runtime.txt` - Backup Python specification  
 ✅ `.python-version` - Additional Python version hint  
@@ -64,4 +79,9 @@ If you continue to have dependency conflicts:
 4. **Deploy** - should work now!
 
 ## If You Still Get Errors
-The updated `requirements-render.txt` should resolve the dependency conflicts. If not, use `requirements-minimal.txt` for a lighter deployment that still provides core functionality.
+Try the requirements files in this order:
+1. `requirements-render.txt` (full features)
+2. `requirements-minimal.txt` (basic ML)
+3. `requirements-ultra-minimal.txt` (core API only)
+
+Each removes more packages to eliminate dependency conflicts while maintaining functionality.
