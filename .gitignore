@@ -1,0 +1,116 @@
+# Root
+# Environment variables / secrets
+.env
+.env.*
+*.env
+*.env.*
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+logs/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.code-workspace
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+
+# Virtual envs
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# Python packaging / build
+build/
+dist/
+.eggs/
+*.egg-info/
+*.egg
+wheels/
+pip-wheel-metadata/
+
+# Python tooling caches
+.pytest_cache/
+.mypy_cache/
+.pytype/
+.tox/
+.nox/
+.cache/
+.coverage*
+coverage.xml
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Backend specific
+backend/__pycache__/
+backend/.env
+backend/.env.*
+backend/venv/
+backend/.venv/
+# Data and models (keep repo light)
+backend/data/
+!backend/data/.gitkeep
+backend/notebooks/.ipynb_checkpoints/
+backend/notebooks/.ipynb_checkpoints/**
+backend/notebooks/*.ipynb_checkpoints
+backend/data/**/*.csv
+backend/data/**/*.parquet
+backend/data/**/*.xlsx
+backend/data/**/*.json
+backend/data/**/*.pkl
+backend/data/**/*.h5
+backend/data/**/*.hdf5
+backend/data/**/*.joblib
+backend/data/**/*.npy
+backend/data/**/*.npz
+backend/data/**/*.pt
+backend/data/**/*.onnx
+backend/data/**/*.model
+backend/data/models/
+!backend/data/models/.gitkeep
+
+# Reports/exports
+reports/
+exports/
+outputs/
+
+# Frontend (vite/react)
+frontens/node_modules/
+frontens/dist/
+frontens/.vite/
+frontens/.cache/
+frontens/.eslintcache
+frontens/npm-debug.log*
+frontens/yarn-debug.log*
+frontens/yarn-error.log*
+frontens/pnpm-debug.log*
+frontens/.env
+frontens/.env.*
+
+# Images and large files (optional, keep repo lean)
+*.ppm
+*.pgm
+*.tmp
+.tmp/
+
+# Streamlit
+.streamlit/
+.streamlit/secrets.toml
+
+# Deployment / platform-specific
+.vercel/
+.netlify/
+render.yaml
+Procfile
