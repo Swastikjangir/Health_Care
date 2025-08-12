@@ -24,9 +24,12 @@ app = FastAPI(
 )
 
 # Add CORS middleware
+# FRONTEND_ORIGINS can be a comma-separated list of origins, e.g. "https://your-app.vercel.app,https://*.vercel.app"
+frontend_origins_env = os.getenv("FRONTEND_ORIGINS", "*")
+allow_origins = [o.strip() for o in frontend_origins_env.split(",") if o.strip()]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify your frontend domain
+    allow_origins=allow_origins if allow_origins else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -277,4 +280,5 @@ async def get_recommendation_templates():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.getenv("PORT", "8000"))
+    uvicorn.run(app, host="0.0.0.0", port=port)

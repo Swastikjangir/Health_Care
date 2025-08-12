@@ -1,37 +1,32 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import axios from 'axios';
+import React, { createContext, useContext, useReducer, useEffect } from "react";
+import axios from "axios";
 
-const API_BASE_URL = 'http://localhost:8000';
+// Use Vite env at build time; fallback to local during development
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 const HealthContext = createContext();
 
 const initialState = {
-  patientData: {},
+  patientData: null,
   healthAssessment: null,
   recommendations: null,
   loading: false,
   error: null,
-  predictions: [],
+  predictions: null,
   clusters: null,
-  models: []
+  models: null
 };
 
-const healthReducer = (state, action) => {
+function healthReducer(state, action) {
   switch (action.type) {
     case 'SET_LOADING':
-      return { ...state, loading: action.payload };
+      return { ...state, loading: action.payload, error: null };
     case 'SET_ERROR':
-      return { ...state, error: action.payload, loading: false };
-    case 'SET_PATIENT_DATA':
-      return { ...state, patientData: action.payload };
+      return { ...state, loading: false, error: action.payload };
     case 'SET_HEALTH_ASSESSMENT':
-      return { ...state, healthAssessment: action.payload, loading: false };
-    case 'SET_RECOMMENDATIONS':
-      return { ...state, recommendations: action.payload };
-    case 'SET_PREDICTIONS':
-      return { ...state, predictions: action.payload };
+      return { ...state, loading: false, healthAssessment: action.payload, error: null };
     case 'SET_CLUSTERS':
-      return { ...state, clusters: action.payload };
+      return { ...state, loading: false, clusters: action.payload, error: null };
     case 'SET_MODELS':
       return { ...state, models: action.payload };
     case 'CLEAR_DATA':
@@ -39,7 +34,7 @@ const healthReducer = (state, action) => {
     default:
       return state;
   }
-};
+}
 
 export const HealthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(healthReducer, initialState);
