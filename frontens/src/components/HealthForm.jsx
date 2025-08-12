@@ -7,6 +7,19 @@ const HealthForm = ({ onSubmit }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 4;
 
+  // Watch height and weight for BMI calculation
+  const height = watch('height');
+  const weight = watch('weight');
+
+  // Calculate BMI when both height and weight are available
+  const calculateBMI = () => {
+    if (height && weight && height > 0 && weight > 0) {
+      const heightInMeters = height / 100;
+      return (weight / (heightInMeters * heightInMeters)).toFixed(1);
+    }
+    return null;
+  };
+
   const formSections = [
     {
       step: 1,
@@ -15,8 +28,8 @@ const HealthForm = ({ onSubmit }) => {
       fields: [
         { name: 'age', label: 'Age', type: 'number', required: true, min: 1, max: 120 },
         { name: 'gender', label: 'Gender', type: 'select', required: true, options: ['male', 'female', 'other'] },
-        { name: 'height', label: 'Height (cm)', type: 'number', min: 100, max: 250 },
-        { name: 'weight', label: 'Weight (kg)', type: 'number', min: 20, max: 300 }
+        { name: 'height', label: 'Height (cm)', type: 'number', required: true, min: 100, max: 250 },
+        { name: 'weight', label: 'Weight (kg)', type: 'number', required: true, min: 20, max: 300 }
       ]
     },
     {
@@ -24,8 +37,8 @@ const HealthForm = ({ onSubmit }) => {
       title: 'Vital Signs',
       icon: Heart,
       fields: [
-        { name: 'blood_pressure', label: 'Blood Pressure (mmHg)', type: 'number', min: 50, max: 300 },
-        { name: 'glucose', label: 'Glucose Level (mg/dL)', type: 'number', min: 20, max: 1000 },
+        { name: 'blood_pressure', label: 'Blood Pressure (mmHg)', type: 'number', required: true, min: 50, max: 300 },
+        { name: 'glucose', label: 'Glucose Level (mg/dL)', type: 'number', required: true, min: 20, max: 1000 },
         { name: 'cholesterol', label: 'Cholesterol (mg/dL)', type: 'number', min: 50, max: 1000 },
         { name: 'creatinine', label: 'Creatinine (mg/dL)', type: 'number', min: 0.1, max: 10, step: 0.1 }
       ]
@@ -35,10 +48,10 @@ const HealthForm = ({ onSubmit }) => {
       title: 'Lifestyle Factors',
       icon: Activity,
       fields: [
-        { name: 'smoking', label: 'Smoking Status', type: 'select', options: ['never_smoker', 'former_smoker', 'current_smoker'] },
-        { name: 'alcohol', label: 'Alcohol Consumption', type: 'select', options: ['minimal', 'moderate', 'excessive'] },
-        { name: 'exercise_frequency', label: 'Exercise Frequency', type: 'select', options: ['daily', 'weekly', 'monthly', 'rarely'] },
-        { name: 'sleep_hours', label: 'Sleep Hours per Night', type: 'number', min: 3, max: 12, step: 0.5 }
+        { name: 'smoking', label: 'Smoking Status', type: 'select', required: true, options: ['never_smoker', 'former_smoker', 'current_smoker'] },
+        { name: 'alcohol', label: 'Alcohol Consumption', type: 'select', required: true, options: ['minimal', 'moderate', 'excessive'] },
+        { name: 'exercise_frequency', label: 'Exercise Frequency', type: 'select', required: true, options: ['daily', 'weekly', 'monthly', 'rarely'] },
+        { name: 'sleep_hours', label: 'Sleep Hours per Night', type: 'number', required: true, min: 3, max: 12, step: 0.5 }
       ]
     },
     {
@@ -46,8 +59,7 @@ const HealthForm = ({ onSubmit }) => {
       title: 'Additional Factors',
       icon: Shield,
       fields: [
-        { name: 'stress_level', label: 'Stress Level', type: 'select', options: ['low', 'medium', 'high'] },
-        { name: 'bmi', label: 'BMI (if known)', type: 'number', min: 10, max: 100, step: 0.1 }
+        { name: 'stress_level', label: 'Stress Level', type: 'select', required: true, options: ['low', 'medium', 'high'] }
       ]
     }
   ];
@@ -71,7 +83,30 @@ const HealthForm = ({ onSubmit }) => {
     const filteredData = Object.fromEntries(
       Object.entries(data).filter(([_, value]) => value !== '' && value !== null)
     );
-    onSubmit(filteredData);
+    
+    // Calculate and add BMI
+    const bmi = calculateBMI();
+    if (bmi) {
+      filteredData.bmi = parseFloat(bmi);
+    }
+    
+    // Ensure all required fields are present with defaults if missing
+    const processedData = {
+      age: filteredData.age || 30,
+      gender: filteredData.gender || 'male',
+      blood_pressure: filteredData.blood_pressure || 120,
+      glucose: filteredData.glucose || 100,
+      bmi: filteredData.bmi || 25,
+      cholesterol: filteredData.cholesterol || 180,
+      creatinine: filteredData.creatinine || 1.0,
+      smoking: filteredData.smoking || 'never_smoker',
+      alcohol: filteredData.alcohol || 'minimal',
+      sleep_hours: filteredData.sleep_hours || 7,
+      stress_level: filteredData.stress_level || 'low',
+      exercise_frequency: filteredData.exercise_frequency || 'weekly'
+    };
+    
+    onSubmit(processedData);
   };
 
   const renderField = (field) => {
@@ -169,6 +204,19 @@ const HealthForm = ({ onSubmit }) => {
             </div>
           ))}
         </div>
+
+        {/* BMI Display */}
+        {height && weight && calculateBMI() && (
+          <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+            <div className="text-center">
+              <p className="text-sm text-green-700 font-medium">Calculated BMI</p>
+              <p className="text-2xl font-bold text-green-800">{calculateBMI()}</p>
+              <p className="text-xs text-green-600">
+                Height: {height}cm, Weight: {weight}kg
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Navigation Buttons */}
         <div className="flex justify-between pt-6">
