@@ -10,6 +10,6 @@ services:
       - key: PYTHON_VERSION
         value: 3.11.9
       - key: FRONTEND_ORIGINS
-        value: https://your-frontend.vercel.app
+        value: https://health-care-roan-nu.vercel.app
       - key: ENABLE_HEAVY
         value: true

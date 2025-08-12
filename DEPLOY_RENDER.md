@@ -25,7 +25,7 @@ If you prefer manual setup:
 1. **Environment Variables** (set these FIRST):
    ```
    PYTHON_VERSION=3.11.9
-   FRONTEND_ORIGINS=https://your-frontend.vercel.app
+   FRONTEND_ORIGINS=https://health-care-roan-nu.vercel.app
    ENABLE_HEAVY=true
    ```
 
@@ -68,7 +68,7 @@ If all else fails:
 ✅ `requirements-render.txt` - Fixed all dependency conflicts  
 ✅ `requirements-minimal.txt` - Backup with basic ML  
 ✅ `requirements-ultra-minimal.txt` - Core API only  
-✅ `render.yaml` - Forces Python 3.11 + backend directory  
+✅ `render.yaml` - Forces Python 3.11 + backend directory + Vercel domain  
 ✅ `runtime.txt` - Backup Python specification  
 ✅ `.python-version` - Additional Python version hint  
 
@@ -85,3 +85,7 @@ Try the requirements files in this order:
 3. `requirements-ultra-minimal.txt` (core API only)
 
 Each removes more packages to eliminate dependency conflicts while maintaining functionality.
+
+## Frontend Integration
+Your frontend is now deployed at: **https://health-care-roan-nu.vercel.app/**
+The backend CORS is configured to allow requests from this domain.
